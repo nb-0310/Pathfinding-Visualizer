@@ -126,12 +126,11 @@ async function dijkstra(graph, n, start, end, highlight) {
         if (distances[idx] < min) continue
 
         if (idx === parseInt(end)) {
-            console.log(distances[idx])
-            console.log(prev[idx])
             break
         }
 
         for (let edge of graph[idx]) {
+
             if (visited[edge]) continue
 
             let newDist = distances[idx] + edge.weight
@@ -142,13 +141,15 @@ async function dijkstra(graph, n, start, end, highlight) {
                 pq.enqueue(edge.id, newDist)
             }
 
-            if (edge.id === parseInt(end)) break
-
-            if (highlight) {
-                highlight(edge.id);
-                document.getElementById(edge.id).classList.toggle ('current-node')
-                await new Promise(resolve => setTimeout(resolve, 3));
+            for (let a in graph[edge]) {
+                document.getElementById (a).classList.toggle ('current-node')
             }
+
+            document.getElementById(edge.id).classList.toggle ('current-node')
+            highlight(edge.id);
+            await new Promise(resolve => setTimeout(resolve, 3));
+
+            if (edge.id === parseInt(end)) break
 
         }
     }
@@ -180,12 +181,6 @@ let visualizeDijkstra = async function () {
         for (let j = 0; j < columns; j++) {
             let id = (i * 50) + j
             let neighbors = []
-            let node = document.getElementById(id)
-
-            if (node.classList.contains('wall')) {
-                totalNodes--
-                continue
-            }
 
             if (i > 0) {
                 let northId = (i - 1) * 50 + j
@@ -258,6 +253,17 @@ let visualizeDijkstra = async function () {
         }, 25 * index);
     })
 
+    let idx = 1
+
+    for (let id in graph) {
+        setTimeout(() => {
+            const node = document.getElementById(id)
+            node.classList.remove('current-node')
+            idx++
+        }, idx * 10)
+    }
+
+
     path.forEach((nodeId, index) => {
         const node = document.getElementById(nodeId);
         setTimeout(() => {
@@ -266,5 +272,5 @@ let visualizeDijkstra = async function () {
     })
 }
 
-const runBtn = document.getElementById('run');
+const runBtn = document.getElementById('dij');
 runBtn.addEventListener('click', visualizeDijkstra)
