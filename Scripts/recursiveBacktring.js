@@ -78,12 +78,13 @@ for (let i = 0; i < rows; i++) {
     }
 }
 
+
 let counter = 1
 
-function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orientation) {
+function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orientation, midDivision) {
 
     if (rowEnd < rowStart || colEnd < colStart) {
-        console.log(counter)
+        // console.log(counter)
         return
     }
 
@@ -101,13 +102,13 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
                         setTimeout(() => {
                             graph[node].node.classList.add('wall')
                             graph[node].visited = true
-                        }, graph[node].count * 20)
+                        }, graph[node].count * 30)
                         counter++
                     }
                 }
             }
         });
-        
+
         surroundingWalls = true;
     }
 
@@ -119,11 +120,19 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
 
         for (let i = colStart - 1; i <= colEnd + 1; i += 2) possibleCols.push(i)
 
-        const randomRowIndex = Math.floor(Math.random() * possibleRows.length)
-        const randomColIndex = Math.floor(Math.random() * possibleCols.length)
+        let rowIdx, colIdx
 
-        const currentRow = possibleRows[randomRowIndex]
-        const currentCol = possibleCols[randomColIndex]
+        if (midDivision) {
+            rowIdx = Math.floor(possibleRows.length / 2)
+            colIdx = Math.floor(possibleCols.length / 2)
+            midDivision = false
+        } else {
+            rowIdx = Math.floor(Math.random() * possibleRows.length)
+            colIdx = Math.floor(Math.random() * possibleCols.length)
+        }
+
+        const currentRow = possibleRows[rowIdx]
+        const currentCol = possibleCols[colIdx]
 
         for (let i in graph) {
             const r = parseInt(graph[i].id / 50)
@@ -135,7 +144,7 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
                     graph[i].count = counter
                     setTimeout(() => {
                         currentHTMLNode.classList.add('wall')
-                    }, graph[i].count * 20)
+                    }, graph[i].count * 30)
 
                     counter++
                 }
@@ -143,15 +152,15 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
         }
 
         if (currentRow - rowStart - 2 > colEnd - colStart) {
-            createMaze(rowStart, currentRow - 2, colStart, colEnd, surroundingWalls, orientation)
+            createMaze(rowStart, currentRow - 2, colStart, colEnd, surroundingWalls, orientation, midDivision)
         } else {
-            createMaze(rowStart, currentRow - 2, colStart, colEnd, surroundingWalls, 'vertical')
+            createMaze(rowStart, currentRow - 2, colStart, colEnd, surroundingWalls, 'vertical', midDivision)
         }
 
         if (rowEnd - currentRow - 2 > colEnd - colStart) {
-            createMaze(currentRow + 2, rowEnd, colStart, colEnd, surroundingWalls, orientation)
+            createMaze(currentRow + 2, rowEnd, colStart, colEnd, surroundingWalls, orientation, midDivision)
         } else {
-            createMaze(currentRow + 2, rowEnd, colStart, colEnd, surroundingWalls, 'vertical')
+            createMaze(currentRow + 2, rowEnd, colStart, colEnd, surroundingWalls, 'vertical', midDivision)
         }
     } else {
         const possibleCols = []
@@ -161,11 +170,19 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
 
         for (let i = rowStart - 1; i <= rowEnd + 1; i += 2) possibleRows.push(i)
 
-        const randomColIndex = Math.floor(Math.random() * possibleCols.length)
-        const randomRowIndex = Math.floor(Math.random() * possibleRows.length)
+        let rowIdx, colIdx
 
-        const currentCol = possibleCols[randomColIndex]
-        const currentRow = possibleRows[randomRowIndex]
+        if (midDivision) {
+            rowIdx = Math.floor(possibleRows.length / 2)
+            colIdx = Math.floor(possibleCols.length / 2)
+            midDivision = false
+        } else {
+            rowIdx = Math.floor(Math.random() * possibleRows.length)
+            colIdx = Math.floor(Math.random() * possibleCols.length)
+        }
+
+        const currentRow = possibleRows[rowIdx]
+        const currentCol = possibleCols[colIdx]
 
         for (let i in graph) {
             const r = parseInt(graph[i].id / 50)
@@ -177,7 +194,7 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
                     graph[i].count = counter
                     setTimeout(() => {
                         currentHTMLNode.classList.add('wall')
-                    }, graph[i].count * 20)
+                    }, graph[i].count * 30)
 
                     counter++
                 }
@@ -185,14 +202,14 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
         }
 
         if (rowEnd - rowStart > currentCol - 2 - colStart) {
-            createMaze(rowStart, rowEnd, colStart, currentCol - 2, surroundingWalls, 'horizontal');
+            createMaze(rowStart, rowEnd, colStart, currentCol - 2, surroundingWalls, 'horizontal', midDivision);
         } else {
-            createMaze(rowStart, rowEnd, colStart, currentCol - 2, surroundingWalls, orientation);
+            createMaze(rowStart, rowEnd, colStart, currentCol - 2, surroundingWalls, orientation, midDivision);
         }
         if (rowEnd - rowStart > colEnd - (currentCol + 2)) {
-            createMaze(rowStart, rowEnd, currentCol + 2, colEnd, surroundingWalls, 'horizontal');
+            createMaze(rowStart, rowEnd, currentCol + 2, colEnd, surroundingWalls, 'horizontal', midDivision);
         } else {
-            createMaze(rowStart, rowEnd, currentCol + 2, colEnd, surroundingWalls, orientation);
+            createMaze(rowStart, rowEnd, currentCol + 2, colEnd, surroundingWalls, orientation, midDivision);
         }
     }
 }
@@ -200,10 +217,10 @@ function createMaze(rowStart, rowEnd, colStart, colEnd, surroundingWalls, orient
 
 const back = document.querySelector('#maze')
 back.addEventListener('click', () => {
-    createMaze(0, 19, 0, 49, false, 'horizontal')
+    createMaze(0, 19, 0, 49, false, 'horizontal', true)
 })
 
-
+// export default graph
 
 
 // function generateMaze() {
