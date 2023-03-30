@@ -20,7 +20,7 @@ body {
     grid-template-rows: 30px;
     grid-auto-flow: row;
     grid-auto-rows: 30px;
-    border: 1px solid rgba(0,100,120,0.75);
+    border: 1px solid #a0bcc2;
 }
 
 
@@ -28,12 +28,13 @@ body {
     float: left;
     width: 30px;
     height: 30px;
-    border: 1px solid rgba(0,100,120,0.75);
+    border: 1px solid #a0bcc2;
     background-color: #f5f5f5;
 }
 
 .cell:hover {
-    background-color: #1a1d2b;
+    background-color: #42535a;
+    border: none;
 }
 
 .start-node {
@@ -68,24 +69,74 @@ body {
 }
 
 .wall {
-    background-color: #1a1d2b;
-    border: 1px solid #1a1d2b;
-    outline: 1px solid #1a1d2b;
-    animation: cell-in 0.3s ease forwards;
+    background-color: #42535a;
+    border: 1px solid #42535a;
+    outline: 1px solid #42535a;
+    animation: wall-in 0.3s ease forwards;
 }
 
 .visited {
     background-color: aqua;
     border: 1px solid #f5f5f5;
     outline: 1px solid aqua;
-    animation: cell-in 1s ease-in both;
+    animation: visited 1s ease-in both;
 }
 
 .current-node {
     background-color: aquamarine;
     border: 1px solid #f5f5f5;
     outline: 1px solid aquamarine;
-    animation: cell-in 1s all both;
+    animation: current-node 1s ease-in both;
+}
+
+@keyframes current-node {
+    0% {
+        transform: scale(30%);
+        background-color: aquamarine;
+        border-radius: 50%;
+    }
+
+    75% {
+        transform: scale(130%);;
+    }
+
+    100% {
+        transform: scale(100%);
+        background-color: rgb(1, 57, 170);
+    }
+}
+
+@keyframes visited {
+    0% {
+        transform: scale(30%);
+        background-color: rgba(0, 0, 66, 0.75);
+        border-radius: 50%;
+    }
+
+    50% {
+        background-color: rgba(17, 104, 217, 0.75);
+    }
+
+    /* 75% {
+        transform: scale(130%);
+        background-color: rgba(0, 217, 159, 0.75);
+    } */
+
+    100% {
+        transform: scale(100%);
+        background-color: rgba(0, 190, 218, 0.75);
+    }
+}
+
+@keyframes wall-in {
+    0% {
+        transform: scale(0%);
+        border-radius: 50%;
+    }
+
+    100% {
+        transform: scale(100%);
+    }
 }
 
 @keyframes cell-in {
@@ -111,5 +162,6 @@ body {
 
     100% {
         transform: scale(100%);
+        /* border-radius: 50%; */
     }
 }
