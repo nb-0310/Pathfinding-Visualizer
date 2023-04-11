@@ -1,4 +1,4 @@
-const bfs = async (graph, n, start, end) => {
+const dfs = async (graph, n, start, end) => {
     let visited = new Array(n)
     visited.fill(false)
 
@@ -9,11 +9,11 @@ const bfs = async (graph, n, start, end) => {
     let prev = new Array(n)
     prev.fill(null)
 
-    let q = []
-    q.push([start, 0])
+    let s = []
+    s.push([start, 0])
 
-    while (q.length > 0) {
-        let val = q.shift()
+    while (s.length > 0) {
+        let val = s.pop()
         let idx = val[0]
         let min = val[1]
         visited[idx] = true
@@ -34,7 +34,7 @@ const bfs = async (graph, n, start, end) => {
             if (newDist < distances[edge.id]) {
                 prev[edge.id] = idx
                 distances[edge.id] = newDist
-                q.push([edge.id, newDist])
+                s.push([edge.id, newDist])
             }
 
             for (let a in graph[edge]) {
@@ -50,11 +50,13 @@ const bfs = async (graph, n, start, end) => {
         }
     }
 
+    // console.log (prev)
+
     return { distances, prev }
 }
 
-async function findPath(graph, n, start, end) {
-    let res = await bfs(graph, n, start, end, highlight)
+async function findPathDFS(graph, n, start, end) {
+    let res = await dfs(graph, n, start, end, highlight)
     let distances = res.distances;
     let prev = res.prev;
     let path = [];
@@ -63,10 +65,12 @@ async function findPath(graph, n, start, end) {
 
     for (let i = end; i !== null; i = prev[i]) path.unshift(i)
 
+    // console.log (path)
+
     return path
 }
 
-const visualizeBfs = async () => {
+const visualizeDfs = async () => {
     const graph = {}
     const rows = 20
     const columns = 50
@@ -140,7 +144,7 @@ const visualizeBfs = async () => {
     console.log (graph)
     const startnid = parseInt(document.querySelector('.start-node').getAttribute('id'))
     const endnid = parseInt(document.querySelector('.end-node').getAttribute('id'))
-    const path = await findPath(graph, totalNodes, startnid, endnid);
+    const path = await findPathDFS(graph, totalNodes, startnid, endnid);
 
     path.forEach((nodeId, index) => {
         const node = document.getElementById(nodeId);
@@ -169,5 +173,5 @@ const visualizeBfs = async () => {
     })
 }
 
-const bfsBtn = document.getElementById('bfs')
-bfsBtn.addEventListener('click', visualizeBfs)
+const dfsBtn = document.getElementById('dfs')
+dfsBtn.addEventListener('click', visualizeDfs)
